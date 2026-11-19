@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Testes do Motor — ÍMPAR</title>
+</head>
+<body style="background:#0b1018;color:#e2e8f0;font-family:monospace;padding:20px;">
+  <h1>Testes Unitários do Motor ÍMPAR</h1>
+  <pre id="out">Executando...</pre>
+  <script type="module">
+    import { runAllEngineTests } from './engine.test.js';
+    const out = document.getElementById('out');
+    try {
+      const results = runAllEngineTests();
+      out.textContent = results.map((r) => `PASS: ${r.name}`).join('\n') + `\n\nTOTAL: ${results.length}/${results.length} OK`;
+      window.__TEST_STATUS__ = 'PASS';
+    } catch (err) {
+      out.textContent = `FAIL: ${err.message}\n${err.stack}`;
+      window.__TEST_STATUS__ = 'FAIL';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ÍMPAR — Jogo de Mesa 3D</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/build/three.module.js",
+        "three/addons/": "./vendor/three/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <div id="hud">
+    <!-- Barra Superior -->
+    <div id="topbar" class="topbar hidden">
+      <div class="glass-pill topbar-group interactive">
+        <span class="brand-mini">ÍMPAR</span>
+        <span class="divider-v"></span>
+        <div class="stat-chip"><span class="label">Rodada</span> <strong id="hud-round">1/3</strong></div>
+        <div class="stat-chip"><span class="label">Disputa</span> <strong id="hud-dispute">1/12</strong></div>
+        <div id="hud-bag-wrap" class="stat-chip hide-sm"><span class="label">Bolsa</span> <strong id="hud-bag">2</strong></div>
+        <div id="hud-removed-wrap" class="stat-chip hidden hide-sm"></div>
+      </div>
+
+      <div id="hud-required-color" class="glass-pill required-color-pill interactive">
+        <span class="color-dot" id="req-color-dot" style="background:#94a3b8;color:#94a3b8"></span>
+        <span id="req-color-text">Qualquer cor</span>
+      </div>
+
+      <div class="glass-pill topbar-group interactive">
+        <button class="icon-btn hide-sm" data-cam="overview" title="Visão Geral">Mesa</button>
+        <button class="icon-btn hide-sm" data-cam="hand" title="Focar na Sua Mão">Mão</button>
+        <button class="icon-btn hide-sm" data-cam="opponents" title="Ver Oponentes">Oponentes</button>
+        <span class="divider-v hide-sm"></span>
+        <button class="icon-btn" id="btn-toggle-tracker" title="Rastreador de Peças Visíveis">Rastreador</button>
+        <button class="icon-btn" id="btn-toggle-log" title="Histórico de Jogadas">Log</button>
+        <button class="icon-btn" id="btn-open-manual" title="Regras Oficiais">?</button>
+        <button class="icon-btn" id="btn-toggle-sound" title="Som">Som</button>
+        <button class="icon-btn" id="btn-back-menu" title="Menu Principal">Menu</button>
+      </div>
+    </div>
+
+    <!-- Etiquetas projetadas sobre a mesa 3D -->
+    <div id="seat-labels"></div>
+
+    <!-- Toast de resultado de disputa -->
+    <div id="dispute-toast" class="glass-pill dispute-toast hidden"></div>
+
+    <!-- Painel lateral (Rastreador ou Log) -->
+    <div id="side-panel" class="glass-pill side-panel interactive hidden"></div>
+
+    <!-- Barra Inferior (Tooltip da peça + Banner de Turno) -->
+    <div id="bottom-hud" class="bottom-hud hidden">
+      <div id="hover-tooltip" class="glass-pill hover-tooltip hidden"></div>
+      <div id="turn-banner" class="glass-pill turn-banner">Sua vez!</div>
+    </div>
+  </div>
+
+  <!-- Tela Inicial / Lobby -->
+  <div id="lobby-overlay" class="lobby-backdrop interactive">
+    <div class="lobby-card">
+      <div class="logo-hero">
+        <svg width="46" height="46" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <polygon points="22,6 42,40 2,40" fill="#00AEEF" />
+          <rect x="26" y="22" width="32" height="32" rx="6" fill="#EC008C" stroke="#090D14" stroke-width="3" />
+          <rect x="36" y="34" width="12" height="4" rx="1.5" fill="#FFFFFF" />
+        </svg>
+        <h1 class="logo-title">ÍMPAR</h1>
+      </div>
+      <p class="logo-subtitle">O jogo de estratégia com peças em 3D — quem terminar com <strong>menos pontos</strong> vence!</p>
+
+      <div class="form-section">
+        <span class="form-label">Modo de Jogo</span>
+        <div class="segmented" id="mode-select">
+          <button class="seg-btn selected" data-mode="solo">Contra a IA</button>
+          <button class="seg-btn" data-mode="local">Mesa Local (Passar o PC)</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <span class="form-label">Número de Jogadores</span>
+        <div class="segmented" id="count-select">
+          <button class="seg-btn" data-count="3">3 Jogadores</button>
+          <button class="seg-btn selected" data-count="4">4 Jogadores</button>
+          <button class="seg-btn" data-count="5">5 Jogadores</button>
+          <button class="seg-btn" data-count="6">6 Jogadores</button>
+        </div>
+      </div>
+
+      <div class="form-section" id="difficulty-section">
+        <span class="form-label">Nível da Inteligência Artificial</span>
+        <div class="segmented" id="diff-select">
+          <button class="seg-btn" data-diff="casual">Casual</button>
+          <button class="seg-btn selected" data-diff="tatico">Tático</button>
+          <button class="seg-btn" data-diff="mestre">Mestre</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <span class="form-label" id="names-label">Seu Nome</span>
+        <div class="input-row" id="player-names-container">
+          <input type="text" class="text-input" id="human-name-input" value="Você" maxlength="16" placeholder="Seu nome" />
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="checkbox-row">
+          <input type="checkbox" id="chk-par-impar" checked />
+          <span>Decidir jogador inicial da Rodada 1 no <strong>Par ou Ímpar</strong> (como no manual)</span>
+        </label>
+      </div>
+
+      <div class="btn-row">
+        <button class="secondary-btn" id="btn-lobby-manual">Ler Manual</button>
+        <button class="primary-btn" id="btn-start-match">Iniciar Partida 3D</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dinâmico (Par/Ímpar, Peça 10, Empate Menor Peça, Privacidade, Fim de Rodada, Manual) -->
+  <div id="modal-backdrop" class="modal-backdrop interactive hidden">
+    <div id="modal-card" class="modal-card"></div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

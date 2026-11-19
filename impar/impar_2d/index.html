@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ÍMPAR — Edição 2D Minimalista</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles/main.css" />
+</head>
+<body>
+  <!-- Fundo geométrico minimalista -->
+  <div class="geo-bg" aria-hidden="true">
+    <div class="geo-shape geo-1"></div>
+    <div class="geo-shape geo-2"></div>
+    <div class="geo-shape geo-3"></div>
+    <div class="geo-shape geo-4"></div>
+  </div>
+
+  <!-- Tela Inicial / Capa + Configuração -->
+  <div id="lobby-screen" class="lobby-screen">
+    <div class="lobby-shell">
+      <div class="cover-column">
+        <img src="./assets/capa.jpg" alt="Capa oficial do jogo Ímpar" class="cover-img" />
+        <div class="cover-meta">
+          <span class="meta-pill">3 a 5 jogadores</span>
+          <span class="meta-pill">25'</span>
+          <span class="meta-pill">14+</span>
+        </div>
+      </div>
+
+      <div class="config-column" id="lobby-config-panel">
+        <div class="lobby-header">
+          <div id="lobby-wordmark"></div>
+          <span class="edition-tag">2D Minimalista</span>
+        </div>
+        <p class="lobby-sub">Jogo de estratégia e dedução — termine as 3 rodadas com <strong>menos pontos</strong>.</p>
+
+        <div class="form-section">
+          <span class="form-label">Modo de Jogo</span>
+          <div class="segmented" id="mode-select">
+            <button class="seg-btn selected" data-mode="solo">Contra a IA</button>
+            <button class="seg-btn" data-mode="online">Online (Salas)</button>
+            <button class="seg-btn" data-mode="local">Mesa Local</button>
+          </div>
+        </div>
+
+        <div class="form-section hidden" id="online-action-section">
+          <span class="form-label">Ação Online</span>
+          <div class="segmented" id="online-tab-select">
+            <button class="seg-btn selected" data-online-tab="create">Criar Sala</button>
+            <button class="seg-btn" data-online-tab="join">Entrar na Sala</button>
+          </div>
+        </div>
+
+        <div class="form-section" id="count-section">
+          <span class="form-label">Número de Jogadores</span>
+          <div class="segmented" id="count-select">
+            <button class="seg-btn" data-count="3">3 Jogadores</button>
+            <button class="seg-btn selected" data-count="4">4 Jogadores</button>
+            <button class="seg-btn" data-count="5">5 Jogadores</button>
+          </div>
+        </div>
+
+        <div class="form-section" id="difficulty-section">
+          <span class="form-label">Dificuldade da IA</span>
+          <div class="segmented" id="diff-select">
+            <button class="seg-btn" data-diff="casual">Casual</button>
+            <button class="seg-btn selected" data-diff="tatico">Tático</button>
+            <button class="seg-btn" data-diff="mestre">Mestre</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="form-label" id="names-label">Seu Nome</span>
+          <div class="input-row" id="player-names-container">
+            <input type="text" class="text-input" id="human-name-input" value="Você" maxlength="16" placeholder="Seu nome" />
+          </div>
+        </div>
+
+        <div class="form-section hidden" id="online-create-fields">
+          <span class="form-label">Senha da Sala (opcional)</span>
+          <input type="password" class="text-input" id="online-create-pass" maxlength="20" placeholder="Deixe vazio para sala sem senha" style="width:100%;" />
+        </div>
+
+        <div class="form-section hidden" id="online-join-fields">
+          <span class="form-label">Código e Senha da Sala</span>
+          <div class="input-row">
+            <input type="text" class="text-input" id="online-join-code" maxlength="8" placeholder="Código (ex: K7M2P)" style="text-transform:uppercase;letter-spacing:2px;font-weight:800;" />
+            <input type="password" class="text-input" id="online-join-pass" maxlength="20" placeholder="Senha (se houver)" />
+          </div>
+        </div>
+
+        <div id="online-status" class="online-status hidden"></div>
+
+        <div class="btn-row">
+          <button class="secondary-btn" id="btn-lobby-manual">Manual</button>
+          <button class="primary-btn" id="btn-start-match">Iniciar Partida</button>
+        </div>
+      </div>
+
+      <!-- Sala de Espera Online -->
+      <div class="config-column hidden" id="waiting-room-panel">
+        <div class="lobby-header">
+          <div id="waiting-wordmark"></div>
+          <span class="edition-tag" id="room-lock-badge">🔓 Sem senha</span>
+        </div>
+        <div class="room-code-box">
+          <div>
+            <span class="form-label" style="margin-bottom:2px;">Código da Sala</span>
+            <div class="room-code-text" id="waiting-room-code">-----</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="icon-btn" id="btn-copy-code">Copiar Código</button>
+            <button class="icon-btn" id="btn-copy-link">Copiar Link</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="form-label" id="waiting-players-label">Jogadores na Sala (1/4)</span>
+          <div id="waiting-players-list" class="waiting-list"></div>
+        </div>
+
+        <div class="form-section hidden" id="waiting-host-options">
+          <label class="checkbox-row">
+            <input type="checkbox" id="chk-fill-bots" />
+            <span>Preencher vagas vazias com IA (<strong id="waiting-bot-diff">Tático</strong>)</span>
+          </label>
+        </div>
+
+        <p id="waiting-guest-msg" class="lobby-sub hidden" style="margin:6px 0 0 0;">Aguardando o anfitrião iniciar a partida...</p>
+
+        <div class="btn-row">
+          <button class="secondary-btn" id="btn-leave-room">Sair da Sala</button>
+          <button class="primary-btn hidden" id="btn-start-online">Iniciar Partida Online</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabuleiro 2D Minimalista -->
+  <div id="game-shell" class="game-shell hidden">
+    <header class="topbar">
+      <div class="card-pill topbar-group">
+        <div id="hud-wordmark"></div>
+        <span class="divider-v"></span>
+        <span class="stat-chip"><span class="label">Rodada</span> <strong id="hud-round">1/3</strong></span>
+        <span class="stat-chip"><span class="label">Disputa</span> <strong id="hud-dispute">1/12</strong></span>
+        <span class="stat-chip hide-sm"><span class="label">Bolsa</span> <strong id="hud-bag">2</strong></span>
+        <span id="hud-removed-wrap" class="stat-chip hidden hide-sm"></span>
+      </div>
+
+      <div class="card-pill topbar-group">
+        <button class="icon-btn" id="btn-toggle-log">Log</button>
+        <button class="icon-btn" id="btn-open-manual">?</button>
+        <button class="icon-btn active" id="btn-toggle-sound">Som</button>
+        <button class="icon-btn" id="btn-back-menu">Menu</button>
+      </div>
+    </header>
+
+    <main class="table-grid">
+      <div id="opponents-top" class="opponents-top"></div>
+
+      <div class="table-middle">
+        <div id="opponents-left" class="side-seats"></div>
+
+        <section id="center-arena" class="center-arena">
+          <div class="arena-meta">
+            <span>Arena da Disputa</span>
+            <span id="arena-discard">Descarte oculto: 0</span>
+          </div>
+          <div id="hud-required-color" class="required-pill">
+            <span class="color-dot" id="req-color-dot" style="background:#94a3b8;"></span>
+            <span id="req-color-text">Cor livre (1ª jogada)</span>
+          </div>
+          <div id="arena-plays" class="arena-plays">
+            <span class="arena-empty">Aguardando primeira jogada...</span>
+          </div>
+          <div id="arena-notice" class="arena-notice hidden"></div>
+        </section>
+
+        <div id="opponents-right" class="side-seats"></div>
+      </div>
+
+      <section id="human-zone" class="human-zone">
+        <div class="human-bar">
+          <div id="human-turn-text">Sua vez!</div>
+          <div id="hover-pill" class="hover-pill">Passe o mouse sobre uma peça para ver cor e paridade</div>
+          <div id="human-score-area" style="display:flex;align-items:center;gap:8px;"></div>
+        </div>
+        <div id="human-hand" class="human-hand"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="dispute-toast" class="dispute-toast hidden"></div>
+  <aside id="side-panel" class="side-panel hidden"></aside>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div id="modal-card" class="modal-card"></div>
+  </div>
+
+  <script src="./vendor/peerjs/peerjs.min.js"></script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zero Two Five Engine Tests</title>
+</head>
+<body>
+  <pre id="test-output">RUNNING...</pre>
+  <script type="module">
+    import {
+      createDeck,
+      createMatchState,
+      startNextRound,
+      getLegalCards,
+      placeBid,
+      playCard,
+      evaluateTable,
+      resolveDispute
+    } from '../src/js/engine.js';
+    import { decideAiTurn } from '../src/js/ai.js';
+    import { getCardImagePath, CARD_BACK_SRC, getTokenImagePath, getFirstPlayerBadgePath } from '../src/js/constants.js';
+
+    const logs = [];
+    let passed = 0;
+    let failed = 0;
+
+    function assert(cond, msg) {
+      if (cond) {
+        passed++;
+        logs.push(`PASS: ${msg}`);
+      } else {
+        failed++;
+        logs.push(`FAIL: ${msg}`);
+      }
+    }
+
+    // 1. Deck sizes
+    assert(createDeck(3).length === 36, '3 players deck has 36 cards');
+    assert(createDeck(4).length === 48, '4 players deck has 48 cards');
+    assert(createDeck(5).length === 60, '5 players deck has 60 cards');
+
+    // 2. Rock 1 starts Dispute 1
+    for (const pc of [3, 4, 5]) {
+      const s = createMatchState({ playerCount: pc });
+      const starter = s.players[s.leadPlayerIndex];
+      assert(
+        starter.hand.some((c) => c.suit === 'rock' && c.number === 1),
+        `${pc}p match starts with Pedra 1 holder`
+      );
+      assert(s.players.every((p) => p.hand.length === 12), `${pc}p match deals 12 cards each`);
+    }
+
+    // 3. Manual Example 2: Same suit (7, 2, 9, 3 Scissors -> player 2 wins)
+    {
+      const ev = evaluateTable([
+        { playerIndex: 0, card: { id: 'scissors-7', suit: 'scissors', number: 7 } },
+        { playerIndex: 1, card: { id: 'scissors-2', suit: 'scissors', number: 2 } },
+        { playerIndex: 2, card: { id: 'scissors-9', suit: 'scissors', number: 9 } },
+        { playerIndex: 3, card: { id: 'scissors-3', suit: 'scissors', number: 3 } }
+      ]);
+      assert(!ev.isTie && ev.winningPlay.playerIndex === 2 && ev.nextLead === 2, 'Manual Example 2: highest same suit wins');
+    }
+
+    // 4. Manual Example 3: Paper vs Scissors (10 Paper, 3 Paper, 3 Scissors, 14 Paper -> 3 Scissors wins)
+    {
+      const ev = evaluateTable([
+        { playerIndex: 0, card: { id: 'paper-10', suit: 'paper', number: 10 } },
+        { playerIndex: 1, card: { id: 'paper-3', suit: 'paper', number: 3 } },
+        { playerIndex: 2, card: { id: 'scissors-3', suit: 'scissors', number: 3 } },
+        { playerIndex: 3, card: { id: 'paper-14', suit: 'paper', number: 14 } }
+      ]);
+      assert(!ev.isTie && ev.winningPlay.playerIndex === 2 && ev.winningSuit === 'scissors', 'Manual Example 3: Scissors beats Paper');
+    }
+
+    // 5. Manual Example 4: Rock vs Paper (8 Rock, 2 Rock, 7 Paper, 8 Paper -> 8 Paper wins)
+    {
+      const ev = evaluateTable([
+        { playerIndex: 0, card: { id: 'rock-8', suit: 'rock', number: 8 } },
+        { playerIndex: 1, card: { id: 'rock-2', suit: 'rock', number: 2 } },
+        { playerIndex: 2, card: { id: 'paper-7', suit: 'paper', number: 7 } },
+        { playerIndex: 3, card: { id: 'paper-8', suit: 'paper', number: 8 } }
+      ]);
+      assert(!ev.isTie && ev.winningPlay.playerIndex === 3 && ev.winningSuit === 'paper', 'Manual Example 4: Paper beats Rock (highest)');
+    }
+
+    // 6. Manual Example 5: 3 suits -> Tie, first 3rd suit causer leads next!
+    {
+      const ev = evaluateTable([
+        { playerIndex: 0, card: { id: 'scissors-2', suit: 'scissors', number: 2 } },
+        { playerIndex: 1, card: { id: 'rock-12', suit: 'rock', number: 12 } },
+        { playerIndex: 2, card: { id: 'paper-3', suit: 'paper', number: 3 } },
+        { playerIndex: 3, card: { id: 'scissors-12', suit: 'scissors', number: 12 } }
+      ]);
+      assert(ev.isTie && ev.nextLead === 2, 'Manual Example 5: 3 suits tie & first 3rd-suit player leads next');
+    }
+
+    // 7. Follow-suit rule
+    {
+      const s = createMatchState({ playerCount: 3 });
+      s.players[0].hand = [
+        { id: 'rock-1', suit: 'rock', number: 1 },
+        { id: 'paper-5', suit: 'paper', number: 5 }
+      ];
+      s.players[1].hand = [
+        { id: 'rock-4', suit: 'rock', number: 4 },
+        { id: 'scissors-9', suit: 'scissors', number: 9 }
+      ];
+      s.leadPlayerIndex = 0;
+      s.turnIndex = 0;
+      playCard(s, 0, 'rock-1');
+      const legalP1 = getLegalCards(s, 1);
+      assert(legalP1.length === 1 && legalP1[0].id === 'rock-4', 'Follow suit restricts to lead suit when held');
+    }
+
+    // 8. Full AI match simulation: Basic & Advanced across 3, 4, 5 players
+    for (const mode of ['basic', 'advanced']) {
+      for (const pc of [3, 4, 5]) {
+        const s = createMatchState({ playerCount: pc, mode, difficulty: 'master' });
+        let guard = 0;
+        while (s.phase !== 'gameOver' && guard < 1000) {
+          guard++;
+          if (s.phase === 'playing') {
+            const pIdx = s.turnIndex;
+            const dec = decideAiTurn(s, pIdx);
+            if (dec.bidCard) placeBid(s, pIdx, dec.bidCard.id);
+            playCard(s, pIdx, dec.playCard.id);
+          } else if (s.phase === 'resolving') {
+            resolveDispute(s);
+          } else if (s.phase === 'roundEnd') {
+            startNextRound(s);
+          }
+        }
+        assert(s.phase === 'gameOver' && s.gameResult.standings.length === pc, `Full match simulation completed: ${pc}p ${mode} (rounds=${s.roundNumber})`);
+      }
+    }
+
+    // 9. Verify all asset URLs load cleanly via HTTP
+    const assetPaths = [CARD_BACK_SRC];
+    for (const suit of ['rock', 'paper', 'scissors']) {
+      for (let n = 1; n <= 20; n++) {
+        assetPaths.push(getCardImagePath(suit, n));
+      }
+    }
+    for (const v of [0, 2, 5]) {
+      assetPaths.push(getTokenImagePath(v, false));
+      assetPaths.push(getTokenImagePath(v, true));
+    }
+    assetPaths.push(getFirstPlayerBadgePath('pt'));
+    assetPaths.push(getFirstPlayerBadgePath('en'));
+
+    Promise.all(
+      assetPaths.map((p) =>
+        fetch('../' + p).then((r) => ({ path: p, ok: r.ok }))
+      )
+    ).then((results) => {
+      const broken = results.filter((r) => !r.ok);
+      assert(broken.length === 0, `All ${assetPaths.length} card & token assets HTTP 200 (broken=${broken.length})`);
+      const summary = `PASSED=${passed} FAILED=${failed}\n` + logs.join('\n');
+      document.getElementById('test-output').textContent = summary;
+      window.__TEST_DONE__ = true;
+    });
+  </script>
+</body>
+</html>

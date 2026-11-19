@@ -1,0 +1,13 @@
+# Binarios desktop e pacotes de distribuicao duplicados
+*.exe
+*.dll
+*.zip
+
+impar/Computador/
+impar/Computador_2D/
+zero_two_five/web_dist/
+zero_two_five/desktop/
+
+# Arquivos temporarios do sistema
+.DS_Store
+Thumbs.db

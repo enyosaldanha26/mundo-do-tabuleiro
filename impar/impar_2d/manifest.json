@@ -1,0 +1,9 @@
+{
+  "name": "ÍMPAR 2D — Minimalista",
+  "short_name": "ÍMPAR 2D",
+  "description": "Versão 2D minimalista do jogo de estratégia Ímpar.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f7f9",
+  "theme_color": "#00aeef"
+}

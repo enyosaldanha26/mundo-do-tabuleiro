@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#FAF6EF" />
+  <rect x="4" y="4" width="56" height="56" rx="13" stroke="#E8DFD1" stroke-width="2" />
+  <!-- Tabuleiro / mesa estilizada em perspectiva -->
+  <path d="M14 40 L32 49 L50 40 L50 46 L32 55 L14 46 Z" fill="#AE432D" />
+  <path d="M14 34 L32 25 L50 34 L32 43 Z" fill="#C8553D" />
+  <!-- Peça geométrica superior (triângulo / peça de jogo) -->
+  <polygon points="32,12 43,29 21,29" fill="#D99B26" stroke="#1F1A17" stroke-width="2.5" stroke-linejoin="round" />
+  <circle cx="32" cy="23" r="3" fill="#FAF6EF" />
+</svg>

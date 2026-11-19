@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mundo do Tabuleiro — Jogos de Tabuleiro Online</title>
+  <meta
+    name="description"
+    content="Jogue direto no navegador os jogos de tabuleiro criados por Ênyo Saldanha — como ÍMPAR e Zero Two Five."
+  />
+  <meta name="theme-color" content="#FAF6EF" />
+  <meta property="og:title" content="Mundo do Tabuleiro" />
+  <meta
+    property="og:description"
+    content="Escolha um jogo e comece a partida direto no navegador — mundodotabuleiro.com.br"
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mundodotabuleiro.com.br/" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <!-- ==================== PÁGINA INICIAL (CATÁLOGO) ==================== -->
+  <div id="home-view" class="home-view">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="#topo" class="brand" aria-label="Mundo do Tabuleiro - Início">
+          <img src="./assets/favicon.svg" alt="" class="brand__icon" width="38" height="38" />
+          <div class="brand__text">
+            <span class="brand__name">Mundo do Tabuleiro</span>
+            <span class="brand__domain">mundodotabuleiro.com.br</span>
+          </div>
+        </a>
+
+        <nav class="site-nav" aria-label="Navegação principal">
+          <a href="#jogos" class="nav-link">Jogos</a>
+          <a href="#sobre" class="nav-link">Sobre</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="topo">
+      <section class="hero">
+        <div class="container hero__inner">
+          <div class="hero__eyebrow">
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            <span>Jogos autorais direto no navegador</span>
+          </div>
+          <h1 class="hero__title">Escolha um jogo e comece a partida</h1>
+          <p class="hero__subtitle">
+            Mesa pronta em um clique — jogue contra a IA, com amigos na mesma mesa ou em salas online,
+            com regras rápidas e manual oficial sempre à mão.
+          </p>
+        </div>
+      </section>
+
+      <section id="jogos" class="catalog-section" aria-labelledby="catalog-heading">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <h2 id="catalog-heading" class="section-title">Nossos Jogos</h2>
+              <p class="section-sub">Clique em qualquer jogo para abrir a mesa e jogar na hora</p>
+            </div>
+            <span id="games-count-pill" class="count-pill">2 jogos disponíveis</span>
+          </div>
+
+          <div id="games-grid" class="games-grid"></div>
+        </div>
+      </section>
+
+      <section id="sobre" class="about-section" aria-labelledby="about-heading">
+        <div class="container">
+          <div class="about-card">
+            <div class="about-card__photo-wrap">
+              <img
+                src="./assets/enyo-saldanha.jpg"
+                alt="Foto de Ênyo Saldanha"
+                class="about-card__photo"
+                loading="lazy"
+              />
+            </div>
+
+            <div class="about-card__content">
+              <span class="about-card__kicker">Sobre o Criador</span>
+              <h2 id="about-heading" class="about-card__title">Ênyo Saldanha</h2>
+              <p class="about-card__text">
+                O <strong>Mundo do Tabuleiro</strong> reúne os jogos de tabuleiro e cartas criados por
+                <strong>Ênyo Saldanha</strong> — incluindo projetos solo e criações em parceria com
+                outros designers. Tudo pronto para jogar direto no navegador, testar novas ideias e
+                reunir a galera na mesa ou online. Novos jogos chegam por aqui em breve!
+              </p>
+
+              <div class="about-card__cta">
+                <a
+                  href="https://www.instagram.com/enyo.bg/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn--instagram"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                  <span>Seguir no Instagram · @enyo.bg</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+
+              <div class="about-card__highlights">
+                <div class="mini-feature">
+                  <span class="mini-feature__icon" aria-hidden="true">⚡</span>
+                  <div>
+                    <strong>Clique e jogue</strong>
+                    <span>Sem cadastros ou downloads</span>
+                  </div>
+                </div>
+                <div class="mini-feature">
+                  <span class="mini-feature__icon" aria-hidden="true">📖</span>
+                  <div>
+                    <strong>Regras na tela</strong>
+                    <span>Resumo rápido + manual PDF</span>
+                  </div>
+                </div>
+                <div class="mini-feature">
+                  <span class="mini-feature__icon" aria-hidden="true">⛶</span>
+                  <div>
+                    <strong>Modo Tela Cheia</strong>
+                    <span>Foco total no tabuleiro</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <strong>Mundo do Tabuleiro</strong>
+          <span>·</span>
+          <span>mundodotabuleiro.com.br</span>
+        </div>
+        <p class="footer-copy">
+          Jogos de <strong>Ênyo Saldanha</strong> ·
+          <a
+            href="https://www.instagram.com/enyo.bg/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-link"
+          >@enyo.bg no Instagram ↗</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== PALCO DO JOGO EM DESTAQUE ==================== -->
+  <section id="stage-view" class="stage-view hidden" aria-label="Jogo em destaque">
+    <header class="stage-toolbar">
+      <div class="stage-toolbar__left">
+        <button id="btn-back-home" type="button" class="tool-btn tool-btn--ghost">
+          <span aria-hidden="true">←</span>
+          <span>Voltar aos Jogos</span>
+        </button>
+
+        <div class="stage-identity">
+          <h2 id="stage-game-title" class="stage-game-title">Jogo</h2>
+          <div id="stage-editions" class="edition-switcher hidden" role="group" aria-label="Versões do jogo"></div>
+        </div>
+      </div>
+
+      <div class="stage-toolbar__center">
+        <div id="stage-quick-switch" class="quick-switch" role="group" aria-label="Trocar de jogo"></div>
+      </div>
+
+      <div class="stage-toolbar__right">
+        <button
+          id="btn-toggle-rules"
+          type="button"
+          class="tool-btn tool-btn--outline"
+          aria-expanded="false"
+          aria-controls="rules-drawer"
+        >
+          <span aria-hidden="true">📖</span>
+          <span>Regras Rápidas</span>
+        </button>
+
+        <button id="btn-fullscreen" type="button" class="tool-btn tool-btn--primary">
+          <span aria-hidden="true">⛶</span>
+          <span id="fullscreen-label">Tela Cheia</span>
+        </button>
+
+        <button
+          id="btn-reload-game"
+          type="button"
+          class="tool-btn tool-btn--icon"
+          title="Recarregar jogo"
+          aria-label="Recarregar jogo"
+        >
+          ↻
+        </button>
+
+        <a
+          id="btn-open-external"
+          href="#"
+          class="tool-btn tool-btn--icon"
+          target="_blank"
+          rel="noopener"
+          title="Abrir jogo em nova aba"
+          aria-label="Abrir jogo em nova aba"
+        >
+          ↗
+        </a>
+      </div>
+    </header>
+
+    <div class="stage-workspace">
+      <div id="stage-frame-wrap" class="stage-frame-wrap">
+        <div id="stage-loader" class="stage-loader" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Preparando a mesa de jogo...</p>
+        </div>
+
+        <div id="stage-file-warning" class="stage-file-warning hidden" role="alert">
+          <div class="file-warning-card">
+            <span class="file-warning-card__badge">Modo Arquivo Local detectado</span>
+            <h3>Abra pelo servidor local para jogar no computador</h3>
+            <p>
+              Você abriu o arquivo <code>index.html</code> diretamente do disco. Por segurança do
+              navegador, os módulos JavaScript dos jogos precisam rodar via servidor web local.
+            </p>
+            <p>
+              Dê dois cliques no arquivo <strong><code>Abrir-Site-Local.bat</code></strong> na pasta do
+              projeto para abrir tudo funcionando perfeitamente! (Quando estiver publicado em
+              <strong>mundodotabuleiro.com.br</strong>, funciona direto ao clicar.)
+            </p>
+            <button id="btn-warning-back" type="button" class="btn btn--primary">
+              Voltar ao Catálogo
+            </button>
+          </div>
+        </div>
+
+        <iframe
+          id="game-iframe"
+          class="game-iframe"
+          title="Mesa do jogo selecionado"
+          allow="fullscreen; clipboard-write; autoplay"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <div id="rules-backdrop" class="rules-backdrop hidden"></div>
+
+      <aside id="rules-drawer" class="rules-drawer" aria-hidden="true" aria-label="Regras rápidas">
+        <div class="rules-drawer__header">
+          <div>
+            <span class="rules-drawer__kicker">Regras Rápidas</span>
+            <h3 id="rules-game-name" class="rules-drawer__title">Jogo</h3>
+            <p id="rules-game-authors" class="rules-drawer__authors hidden"></p>
+          </div>
+          <button
+            id="btn-close-rules"
+            type="button"
+            class="tool-btn tool-btn--icon"
+            title="Fechar regras"
+            aria-label="Fechar painel de regras"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div id="rules-body" class="rules-drawer__body"></div>
+
+        <div class="rules-drawer__footer">
+          <a
+            id="rules-pdf-link"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            class="btn btn--primary btn--full"
+          >
+            <span>📄</span>
+            <span>Abrir Manual Oficial (PDF)</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script src="./js/games.js" defer></script>
+  <script src="./js/app.js" defer></script>
+</body>
+</html>

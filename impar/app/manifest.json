@@ -1,0 +1,10 @@
+{
+  "name": "ÍMPAR — Jogo de Mesa 3D",
+  "short_name": "ÍMPAR 3D",
+  "description": "Jogo de estratégia e dedução com peças em 3D. Termine com menos pontos após 3 rodadas!",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090d14",
+  "theme_color": "#090d14",
+  "orientation": "landscape"
+}
